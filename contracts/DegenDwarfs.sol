@@ -19,23 +19,23 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
-contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyGuard {
+contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyGuard, ERC721Burnable {
     using Counters for Counters.Counter;
 
     // @notice Counter for number of minted characters
     Counters.Counter public _tokenIds;    
-
     // Max Supply of DegenDwarfs
     uint256 public immutable maxSupply;
     // Store address and discount rate (10% off = 0.01 ether, convert to wei)
-    mapping(address => uint256) private _discount;
+    mapping(address => uint256) public _discount;
     // If you are on the list, you can mint early
     mapping(address => bool) public _whitelist;
     // Contract managed whitelist mint start
-    uint256 whitelistStart;
+    uint256 public whitelistStart;
     // Contract managed public mint start and whitelist end
-    uint256 mintStart;
+    uint256 public mintStart;
     // Variable to change mint price if needed
     uint256 public mintPrice;
     // Base URI used for token metadata
