@@ -31,11 +31,11 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     // Store address and discount rate (10% off = 0.01 ether, convert to wei)
     mapping(address => uint256) public _discount;
     // If you are on the list, you can mint early
-    mapping(address => bool) public _whitelist;
+    mapping(address => bool) public _whitelist; //Friday, February 18, 2022 9:31:14 PM UTC
     // Contract managed whitelist mint start
-    uint256 public whitelistStart;
+    uint256 public whitelistStart = 1645219874;
     // Contract managed public mint start and whitelist end
-    uint256 public mintStart = 1645219874; //Friday, February 18, 2022 9:31:14 PM UTC
+    uint256 public mintStart = 1645176674; // Friday, February 18, 2022 9:31:14 AM UTC
     // Variable to change mint price if needed
     uint256 public mintPrice = 69000000000000000;
     // Base URI used for token metadata
@@ -47,11 +47,9 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         address _beneficiary,
         string memory name,
         string memory symbol,
-        uint256 wlist,
         string memory _tokenURI
     ) ERC721(name, symbol) {
         beneficiary = _beneficiary;
-        whitelistStart = wlist;
         _baseTokenUri = _tokenURI;
     }
 
@@ -60,7 +58,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
      * @notice Claim mint discounts applied to your address
      */   
     function discount() external payable whenNotPaused nonReentrant {
-        uint256 discounted = mintPrice * (1e18 - _discount[_msgSender()]) / 1e18;
+        uint256 discounted = (mintPrice * (1e18 - _discount[_msgSender()])) / 1e18;
         require(msg.value == uint256(discounted), "ETH value incorrect");
         require(_tokenIds.current() <= maxSupply, "Mint is over");
         _tokenIds.increment();
