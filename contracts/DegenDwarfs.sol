@@ -54,7 +54,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         beneficiary = _beneficiary;
         whitelistStart = wlist;
         mintStart = startMint;
-        _manualMintPrice = 42000000000000000;
+        _manualMintPrice = 69000000000000000;
         _baseTokenUri = _tokenURI;
          maxSupply = 6969;
     }
