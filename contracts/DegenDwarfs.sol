@@ -37,7 +37,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     // Contract managed public mint start and whitelist end
     uint256 mintStart;
     // Variable to change mint price if needed
-    uint256 private _manualMintPrice;
+    uint256 public mintPrice;
     // Base URI used for token metadata
     string private _baseTokenUri;     
     // DegenDwarf Beneficiary address
@@ -54,7 +54,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         beneficiary = _beneficiary;
         whitelistStart = wlist;
         mintStart = startMint;
-        _manualMintPrice = 69000000000000000;
+        mintPrice = 69000000000000000;
         _baseTokenUri = _tokenURI;
          maxSupply = 6969;
     }
@@ -64,7 +64,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
      * @notice Claim mint discounts applied to your address
      */   
     function discount() external payable whenNotPaused nonReentrant {
-        uint256 discounted = getNFTPrice() * (1e18 - _discount[_msgSender()]) / 1e18;
+        uint256 discounted = mintPrice * (1e18 - _discount[_msgSender()]) / 1e18;
         require(msg.value == uint256(discounted), "ETH value incorrect");
         require(_tokenIds.current() <= maxSupply, "Mint is over");
         _tokenIds.increment();
@@ -81,7 +81,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     function claim(uint256 _mintAmount) external payable whenNotPaused nonReentrant {
         require(_mintAmount >= 1, "You must mint at least 1 NFT");
         require(_tokenIds.current() <= maxSupply, "Mint is over");        
-        uint256 bundlePrice = getNFTPrice() * _mintAmount;
+        uint256 bundlePrice = mintPrice * _mintAmount;
         require(msg.value == bundlePrice, "ETH value incorrect");
         require(whitelistStart < block.timestamp, "Whitelist minting has not started.");
         //Whitelist Phase
@@ -113,7 +113,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
      * @param newPrice (make sure value is in wei)
      */   
     function overrideMintPrice(uint256 newPrice) external onlyOwner {
-        _manualMintPrice = newPrice;
+        mintPrice = newPrice;
     }
 
     /*
@@ -161,14 +161,6 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         payable(_msgSender()).transfer(balance);
     }
 
-    // Public functions
-    /* @notice Returns price to mint a Degen Dwarf NFT */  
-    function getNFTPrice() public view returns (uint256) {
-        uint256 currentSupply = _tokenIds.current();
-        require(currentSupply < maxSupply, "Sale has already ended");
-        return _manualMintPrice;
-    }
-    
     // Internal functions
     /* @notice Returns the baseURI */      
     function _baseURI() internal view virtual override returns (string memory) {
