@@ -27,7 +27,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     // @notice Counter for number of minted characters
     Counters.Counter public _tokenIds;    
     // Max Supply of DegenDwarfs
-    uint256 public immutable maxSupply;
+    uint256 public immutable maxSupply = 6969;
     // Store address and discount rate (10% off = 0.01 ether, convert to wei)
     mapping(address => uint256) public _discount;
     // If you are on the list, you can mint early
@@ -35,9 +35,9 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     // Contract managed whitelist mint start
     uint256 public whitelistStart;
     // Contract managed public mint start and whitelist end
-    uint256 public mintStart;
+    uint256 public mintStart = 1645219874; //Friday, February 18, 2022 9:31:14 PM UTC
     // Variable to change mint price if needed
-    uint256 public mintPrice;
+    uint256 public mintPrice = 69000000000000000;
     // Base URI used for token metadata
     string private _baseTokenUri;     
     // DegenDwarf Beneficiary address
@@ -48,15 +48,11 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         string memory name,
         string memory symbol,
         uint256 wlist,
-        uint256 startMint,
         string memory _tokenURI
     ) ERC721(name, symbol) {
         beneficiary = _beneficiary;
         whitelistStart = wlist;
-        mintStart = startMint;
-        mintPrice = 69000000000000000;
         _baseTokenUri = _tokenURI;
-         maxSupply = 6969;
     }
 
     // External function
@@ -68,8 +64,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         require(msg.value == uint256(discounted), "ETH value incorrect");
         require(_tokenIds.current() <= maxSupply, "Mint is over");
         _tokenIds.increment();
-        uint256 newCharId = _tokenIds.current();
-        _safeMint(_msgSender(), newCharId);
+        _safeMint(_msgSender(), _tokenIds.current());
         // delete discount
         delete _discount[_msgSender()];
     }
@@ -81,8 +76,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     function claim(uint256 _mintAmount) external payable whenNotPaused nonReentrant {
         require(_mintAmount >= 1, "You must mint at least 1 NFT");
         require(_tokenIds.current() <= maxSupply, "Mint is over");        
-        uint256 bundlePrice = mintPrice * _mintAmount;
-        require(msg.value == bundlePrice, "ETH value incorrect");
+        require(msg.value == mintPrice * _mintAmount, "ETH value incorrect");
         require(whitelistStart < block.timestamp, "Whitelist minting has not started.");
         //Whitelist Phase
         if(whitelistStart < block.timestamp && mintStart > block.timestamp)
@@ -97,12 +91,11 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         for(uint256 i = 0; i < _mintAmount; i++)
         {
             _tokenIds.increment();
-            uint256 newCharId = _tokenIds.current();
-            _safeMint(_msgSender(), newCharId);
+            _safeMint(_msgSender(), _tokenIds.current());
         }
 
         //Pay for new NFT(s)
-        payable(beneficiary).transfer(bundlePrice);
+        payable(beneficiary).transfer(mintPrice * _mintAmount);
         //Remove Minter from whitelist
         if(_whitelist[_msgSender()]) 
             delete _whitelist[_msgSender()];
@@ -157,8 +150,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
 
     /* @notice Withdraw funds in Degen Dwarfs contract*/  
     function withdraw() external onlyOwner {
-        uint256 balance = address(this).balance;
-        payable(_msgSender()).transfer(balance);
+        payable(_msgSender()).transfer(address(this).balance);
     }
 
     // Internal functions
