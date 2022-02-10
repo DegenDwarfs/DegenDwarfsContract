@@ -31,9 +31,9 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     // Store address and discount rate (10% off = 0.01 ether, convert to wei)
     mapping(address => uint256) public _discount;
     // If you are on the list, you can mint early
-    mapping(address => bool) public _whitelist; //Friday, February 18, 2022 9:31:14 PM UTC
+    mapping(address => uint256) public _whitelist; 
     // Contract managed whitelist mint start
-    uint256 public whitelistStart = 1645219874;
+    uint256 public whitelistStart = 1645219874; //Friday, February 18, 2022 9:31:14 PM UTC
     // Contract managed public mint start and whitelist end
     uint256 public mintStart = 1645176674; // Friday, February 18, 2022 9:31:14 AM UTC
     // Variable to change mint price if needed
@@ -72,19 +72,24 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
      * @param _mintAmount How many NFTs would you like to batch mint?
      */    
     function claim(uint256 _mintAmount) external payable whenNotPaused nonReentrant {
-        require(_mintAmount >= 1, "You must mint at least 1 NFT");
-        require(_tokenIds.current() <= maxSupply, "Mint is over");        
+        require(_tokenIds.current() <= maxSupply, "Mint is over");    
+        require(_mintAmount >= 1, "You must mint at least 1 NFT");    
         require(msg.value == mintPrice * _mintAmount, "ETH value incorrect");
-        require(whitelistStart < block.timestamp, "Whitelist minting has not started.");
+        
         //Whitelist Phase
         if(whitelistStart < block.timestamp && mintStart > block.timestamp)
         {
-            require(_whitelist[_msgSender()], "You are not on the Whitelist");
-            require(_mintAmount < 3, "Whitelist can mint up to 2 Dwarfs per transaction.");
+            require(_whitelist[_msgSender()] >= _mintAmount, "You don't have enought whitelist credits.");
+            require(_mintAmount <= 2, "Whitelist can mint up to 2 Dwarfs per transaction.");
+            //Remove whitelist credits from Minter
+            _whitelist[_msgSender()] -= _mintAmount;
         }
         //Public Phase
-        if(mintStart < block.timestamp)
+        else if(mintStart < block.timestamp)
             require(_mintAmount < 11, "You can mint up to 10 Dwards per transaction");
+        //No Mint Phase
+        else
+            revert("Whitelist minting has not started.");
 
         for(uint256 i = 0; i < _mintAmount; i++)
         {
@@ -94,9 +99,6 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
 
         //Pay for new NFT(s)
         payable(beneficiary).transfer(mintPrice * _mintAmount);
-        //Remove Minter from whitelist
-        if(_whitelist[_msgSender()]) 
-            delete _whitelist[_msgSender()];
     }    
 
     /*
@@ -124,7 +126,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
      */  
     function addWhitelist(address[] memory whitelist) external onlyOwner {
         for (uint i = 0; i < whitelist.length; i++) {
-            _whitelist[whitelist[i]] = true;
+            _whitelist[whitelist[i]] = 2;
           }
     }
 
