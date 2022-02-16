@@ -79,7 +79,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         //Whitelist Phase
         if(whitelistStart < block.timestamp && mintStart > block.timestamp)
         {
-            require(_whitelist[_msgSender()] >= _mintAmount, "You don't have enought whitelist credits.");
+            require(_whitelist[_msgSender()] >= _mintAmount, "You don't have enough whitelist credits.");
             require(_mintAmount <= 2, "Whitelist can mint up to 2 Dwarfs per transaction.");
             //Remove whitelist credits from Minter
             _whitelist[_msgSender()] -= _mintAmount;
