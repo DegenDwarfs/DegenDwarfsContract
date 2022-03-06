@@ -33,9 +33,9 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     // If you are on the list, you can mint early
     mapping(address => uint256) public _whitelist; 
     // Contract managed whitelist mint start
-    uint256 public whitelistStart = 1645219874; //Friday, February 18, 2022 9:31:14 PM UTC
+    uint256 public whitelistStart = 1644970896; //Wednesday, February 16, 2022 12:21:36 AM UTC
     // Contract managed public mint start and whitelist end
-    uint256 public mintStart = 1645176674; // Friday, February 18, 2022 9:31:14 AM UTC
+    uint256 public mintStart = 1644971896; // Wednesday, February 16, 2022 12:38:16 AM UTC
     // Variable to change mint price if needed
     uint256 public mintPrice = 69000000000000000;
     // Base URI used for token metadata
@@ -80,13 +80,13 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         if(whitelistStart < block.timestamp && mintStart > block.timestamp)
         {
             require(_whitelist[_msgSender()] >= _mintAmount, "You don't have enought whitelist credits.");
-            require(_mintAmount <= 2, "Whitelist can mint up to 2 Dwarfs per transaction.");
+            require(_mintAmount <= 5, "Whitelist can mint up to 5 Dwarfs per transaction.");
             //Remove whitelist credits from Minter
             _whitelist[_msgSender()] -= _mintAmount;
         }
         //Public Phase
         else if(mintStart < block.timestamp)
-            require(_mintAmount < 11, "You can mint up to 10 Dwards per transaction");
+            require(_mintAmount <= 15, "You can mint up to 15 Dwards per transaction");
         //No Mint Phase
         else
             revert("Whitelist minting has not started.");
