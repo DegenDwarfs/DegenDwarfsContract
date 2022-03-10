@@ -80,7 +80,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         if(whitelistStart < block.timestamp && mintStart > block.timestamp)
         {
             require(_whitelist[_msgSender()] >= _mintAmount, "You don't have enought whitelist credits.");
-            require(_mintAmount <= 5, "Whitelist can mint up to 5 Dwarfs per transaction.");
+            require(_mintAmount <= 10, "Whitelist can mint up to 5 Dwarfs per transaction.");
             //Remove whitelist credits from Minter
             _whitelist[_msgSender()] -= _mintAmount;
         }
@@ -124,9 +124,9 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
      * @notice Add an multiple addresses to the whitelist
      * @param whitelist array of addresses
      */  
-    function addWhitelist(address[] memory whitelist) external onlyOwner {
+    function addWhitelist(address[] memory whitelist, uint256 credits) external onlyOwner {
         for (uint i = 0; i < whitelist.length; i++) {
-            _whitelist[whitelist[i]] = 2;
+            _whitelist[whitelist[i]] = credits;
           }
     }
 

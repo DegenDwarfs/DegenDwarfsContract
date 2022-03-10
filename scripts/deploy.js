@@ -2,7 +2,7 @@
 const BENEFICIARY = "0x4b0Ca72c5D8cba2805b9cD712be062b40dA24C38";
 const NAME = "Degen Dwarfs";
 const TICKER = "DD";
-const TOKEN_URI = "";
+const TOKEN_URI = "https://assets.degendwarfs.io/json/";
 
 async function main() {
   if (network.name === "hardhat") {
