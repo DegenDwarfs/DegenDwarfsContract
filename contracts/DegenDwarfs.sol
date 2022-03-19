@@ -41,7 +41,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     // Base URI used for token metadata
     string private _baseTokenUri;     
     // DegenDwarf Beneficiary address
-    address private immutable beneficiary;
+    address public beneficiary;
 
     constructor(
         address _beneficiary,
@@ -72,7 +72,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
      * @param _mintAmount How many NFTs would you like to batch mint?
      */    
     function claim(uint256 _mintAmount) external payable whenNotPaused nonReentrant {
-        require(_tokenIds.current() <= maxSupply, "Mint is over");    
+        require((_tokenIds.current() + _mintAmount) <= maxSupply, "Mint is over");
         require(_mintAmount >= 1, "You must mint at least 1 NFT");    
         require(msg.value == mintPrice * _mintAmount, "ETH value incorrect");
         
@@ -80,7 +80,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
         if(whitelistStart < block.timestamp && mintStart > block.timestamp)
         {
             require(_whitelist[_msgSender()] >= _mintAmount, "You don't have enought whitelist credits.");
-            require(_mintAmount <= 10, "Whitelist can mint up to 5 Dwarfs per transaction.");
+            require(_mintAmount <= 10, "Whitelist can mint up to 10 Dwarfs per transaction.");
             //Remove whitelist credits from Minter
             _whitelist[_msgSender()] -= _mintAmount;
         }
@@ -96,9 +96,6 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
             _tokenIds.increment();
             _safeMint(_msgSender(), _tokenIds.current());
         }
-
-        //Pay for new NFT(s)
-        payable(beneficiary).transfer(mintPrice * _mintAmount);
     }    
 
     /*
@@ -150,7 +147,11 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
 
     /* @notice Withdraw funds in Degen Dwarfs contract*/  
     function withdraw() external onlyOwner {
-        payable(_msgSender()).transfer(address(this).balance);
+        payable(beneficiary).transfer(address(this).balance);
+    }
+
+    function setBeneficiary(address newOwner) public onlyOwner {
+        beneficiary = newOwner;
     }
 
     // Internal functions
