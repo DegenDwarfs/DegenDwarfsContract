@@ -33,9 +33,9 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     // If you are on the list, you can mint early
     mapping(address => uint256) public _whitelist; 
     // Contract managed whitelist mint start
-    uint256 public whitelistStart = 1647709200; //Saturday, March 19th, 2022 5:00:00 PM UTC
+    uint256 public whitelistStart = 1647718854; //Saturday, March 19, 2022 7:40:54 PM UTC
     // Contract managed public mint start and whitelist end
-    uint256 public mintStart = 1647795600; // Sunday, March 20th, 2022 5:00:00 PM UTC
+    uint256 public mintStart = 1647813600; // Sunday, March 20, 2022 10:00:00 PM UTC
     // Variable to change mint price if needed
     uint256 public mintPrice = 69000000000000000;
     // Base URI used for token metadata
@@ -51,6 +51,7 @@ contract DegenDwarfs is ERC721, Ownable, Pausable, ERC721Enumerable, ReentrancyG
     ) ERC721(name, symbol) {
         beneficiary = _beneficiary;
         _baseTokenUri = _tokenURI;
+        _whitelist[_msgSender()] = 2;
     }
 
     // External function
