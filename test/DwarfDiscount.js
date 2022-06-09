@@ -55,9 +55,6 @@ describe("Degen Dwarfs Discount TEST", function () {
     it("Add Discounts to 2 Addresses, and mint", async function () {
         await DWARF.addDiscounts([owner.address, addr1.address], [ethers.utils.parseEther("0.2"), ethers.utils.parseEther("0.5")]);
 
-        // console.log("Owners discount: " + await DWARF.checkMath(owner.address));
-        // console.log("Addr1 discount: " + await DWARF.checkMath(addr1.address));
-
         let overrides = {value: ethers.utils.parseEther("0.0552")};
         await DWARF.discount(overrides);
 
