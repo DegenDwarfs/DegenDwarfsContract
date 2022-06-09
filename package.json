@@ -1,0 +1,27 @@
+{
+  "name": "degendwarfscontract",
+  "version": "1.0.0",
+  "description": "NFT project by the Degen Dwarfs",
+  "main": "arguments.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npx hardhat test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DegenDwarfs/DegenDwarfsContract.git"
+  },
+  "keywords": [
+    "nft",
+    "erc-721a",
+    "solidity"
+  ],
+  "author": "Degen Dwarfs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DegenDwarfs/DegenDwarfsContract/issues"
+  },
+  "homepage": "https://github.com/DegenDwarfs/DegenDwarfsContract#readme"
+}
