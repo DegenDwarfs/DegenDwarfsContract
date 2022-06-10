@@ -36,4 +36,3 @@ npx hardhat run scripts/deploy.js --network <network>
 
 ## ABI
 Build a front-end for this contract by using the ABI located in [scripts/DegenDwarfs.json](https://github.com/DegenDwarfs/DegenDwarfsContract/blob/main/scripts/DegenDwarfs.json)
-
