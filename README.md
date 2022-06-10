@@ -1,4 +1,4 @@
-# <img src="https://github.com/stinkyfi/DegenDwarfs/blob/main/images/DegenDwarfs.png" width="500">
+# <img src="https://github.com/DegenDwarfs/DegenDwarfsContract/blob/main/images/DegenDwarfs.png" width="500">
 
 Degen Dwarfs is a Guild of 6969 Dwarfs on the Ethereum blockchain, equipped with gear earned from their adventures through DeFi. The community aims to enhance the DeFi experience, using shared knowledge and funds to find new projects and minimize how often we are exit liquidity. Come join us at twitter.com/DegenDwarfs!
 
@@ -16,6 +16,12 @@ The first steps are to clone the repository and install its dependencies:
 git clone https://github.com/DegenDwarfs/DegenDwarfsContract.git
 cd DegenDwarfsContract
 npm install
+```
+
+Make a copy of the sample hardhat config file, git ignores the hardhatconfig file.
+This file is sensitive, because it may contain private keys
+```sh
+cp sample.hardhat.config.js hardhat.config.js
 ```
 
 ## Test
